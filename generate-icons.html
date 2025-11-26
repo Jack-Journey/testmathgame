@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Icon Generator</title>
+</head>
+<body>
+    <h1>Captain Fluffy Icon Generator</h1>
+    <p>Click buttons to download icons:</p>
+    <div id="buttons"></div>
+    <canvas id="canvas" style="display:none;"></canvas>
+
+    <script>
+        const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const buttonsDiv = document.getElementById('buttons');
+
+        function generateIcon(size) {
+            canvas.width = size;
+            canvas.height = size;
+
+            // Background gradient
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#1a1a2e');
+            gradient.addColorStop(0.5, '#16213e');
+            gradient.addColorStop(1, '#0f3460');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, size, size);
+
+            // Draw stars
+            ctx.fillStyle = 'rgba(255,255,255,0.5)';
+            for (let i = 0; i < 10; i++) {
+                const x = Math.random() * size;
+                const y = Math.random() * size;
+                ctx.beginPath();
+                ctx.arc(x, y, size * 0.01, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Draw emoji (hamster and rocket)
+            ctx.font = `${size * 0.4}px serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('🐹', size * 0.5, size * 0.4);
+            
+            ctx.font = `${size * 0.25}px serif`;
+            ctx.fillText('🚀', size * 0.75, size * 0.7);
+
+            // Border
+            ctx.strokeStyle = '#f1c40f';
+            ctx.lineWidth = size * 0.03;
+            ctx.strokeRect(size * 0.05, size * 0.05, size * 0.9, size * 0.9);
+
+            return canvas.toDataURL('image/png');
+        }
+
+        sizes.forEach(size => {
+            const btn = document.createElement('button');
+            btn.innerText = `Download ${size}x${size}`;
+            btn.style.margin = '5px';
+            btn.style.padding = '10px 20px';
+            btn.style.fontSize = '16px';
+            btn.onclick = () => {
+                const dataUrl = generateIcon(size);
+                const link = document.createElement('a');
+                link.download = `icon-${size}.png`;
+                link.href = dataUrl;
+                link.click();
+            };
+            buttonsDiv.appendChild(btn);
+        });
+
+        // Download all button
+        const allBtn = document.createElement('button');
+        allBtn.innerText = '⬇️ Download ALL Icons';
+        allBtn.style.margin = '20px 5px';
+        allBtn.style.padding = '15px 30px';
+        allBtn.style.fontSize = '18px';
+        allBtn.style.background = '#2ecc71';
+        allBtn.style.color = 'white';
+        allBtn.style.border = 'none';
+        allBtn.style.borderRadius = '8px';
+        allBtn.style.cursor = 'pointer';
+        allBtn.onclick = () => {
+            sizes.forEach((size, index) => {
+                setTimeout(() => {
+                    const dataUrl = generateIcon(size);
+                    const link = document.createElement('a');
+                    link.download = `icon-${size}.png`;
+                    link.href = dataUrl;
+                    link.click();
+                }, index * 500);
+            });
+        };
+        buttonsDiv.appendChild(document.createElement('br'));
+        buttonsDiv.appendChild(allBtn);
+    </script>
+</body>
+</html>
